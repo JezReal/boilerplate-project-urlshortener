@@ -1,53 +1,59 @@
-require('dotenv').config();
-const express = require('express');
-const cors = require('cors');
-const bodyParser = require('body-parser');
+require("dotenv").config();
+const express = require("express");
+const cors = require("cors");
 const app = express();
+const dns = require("dns");
 
 // Basic Configuration
 const port = process.env.PORT || 3000;
 
 app.use(cors());
-app.use(bodyParser.json());
+app.use(express.urlencoded({ extended: true }));
 
 const urls = [];
 
-app.use('/public', express.static(`${process.cwd()}/public`));
+app.use("/public", express.static(`${process.cwd()}/public`));
 
-app.get('/', function(req, res) {
-  res.sendFile(process.cwd() + '/views/index.html');
-});
-
-app.post("/api/shorturl", (request, response) => {
-
+app.get("/", function (req, res) {
+  res.sendFile(process.cwd() + "/views/index.html");
 });
 
 app.get("/api/shorturl/:url", (request, response) => {
-  const shortUrl = request.params['url'];
-  let urlIndex;
-
-  try {
-    urlIndex = parseInt(shortUrl);
-  } catch(error) {
-    response.redirect("https://github.com//JezReal/");
-    return;
-  }
-
-  const site = urls[urlIndex];
-
-  if (!site) {
-    response.redirect("https://github.com//JezReal/");
-    return;
-  }
+  const shortUrl = request.params["url"];
+  const site = urls[shortUrl];
 
   response.redirect(site);
 });
 
-// Your first API endpoint
-app.get('/api/hello', function(req, res) {
-  res.json({ greeting: 'hello API' });
+app.post("/api/shorturl", (request, response) => {
+  const requestUrl = request.body.url.toString();
+  const replaceHttps = /^https?:\/\//i;
+
+  const formattedUrl = requestUrl.replace(replaceHttps, "");
+
+  dns.lookup(formattedUrl, { all: true }, (error, addreses) => {
+    if (error) {
+      response.json({ error: "invalid url" });
+    } else {
+      urls.push(formattedUrl);
+      response.json({
+        original_url: formattedUrl,
+        short_url: urls.length - 1,
+      });
+    }
+  });
 });
 
-app.listen(port, function() {
+app.get("/api/thing", (request, response) => {
+  console.log('called');
+  response.sendStatus(200);
+})
+
+// Your first API endpoint
+app.get("/api/hello", function (req, res) {
+  res.json({ greeting: "hello API" });
+});
+
+app.listen(port, function () {
   console.log(`Listening on port ${port}`);
 });
