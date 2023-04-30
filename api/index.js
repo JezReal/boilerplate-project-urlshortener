@@ -37,7 +37,7 @@ app.post("/api/shorturl", (request, response) => {
     } else {
       urls.push(formattedUrl);
       response.json({
-        original_url: formattedUrl,
+        original_url: requestUrl,
         short_url: urls.length - 1,
       });
     }
