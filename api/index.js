@@ -20,9 +20,9 @@ app.get("/", function (req, res) {
 
 app.get("/api/shorturl/:url", (request, response) => {
   const shortUrl = request.params["url"];
-  const site = urls[shortUrl];
+  const site = urls[shortUrl - 1];
 
-  response.redirect(site);
+  response.redirect(site.original_url);
 });
 
 app.post("/api/shorturl", (request, response) => {
@@ -35,11 +35,10 @@ app.post("/api/shorturl", (request, response) => {
     if (error) {
       response.json({ error: "invalid url" });
     } else {
-      urls.push(formattedUrl);
-      response.json({
-        original_url: requestUrl,
-        short_url: urls.length - 1,
-      });
+      const url = { 'original_url': requestUrl, short_url: urls.length + 1};
+
+      urls.push(url);
+      response.json(url);
     }
   });
 });
