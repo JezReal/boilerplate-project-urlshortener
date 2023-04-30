@@ -14,7 +14,7 @@ const urls = [];
 
 app.use("/public", express.static(`${process.cwd()}/public`));
 
-app.get("/", function (req, res) {
+app.get("/api", function (req, res) {
   res.sendFile(process.cwd() + "/views/index.html");
 });
 
