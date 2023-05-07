@@ -35,10 +35,12 @@ app.post("/api/shorturl", (request, response) => {
     if (error) {
       response.json({ error: "invalid url" });
     } else {
-      urls.push({ original_url: `https://${formattedUrl}`, short_url: urls.length + 1});
+      const shortUrl = urls.length + 1;
+
+      urls.push({ original_url: `https://${formattedUrl}`, short_url: shortUrl});
       response.json({
         original_url: requestUrl,
-        short_url: urls.length + 1
+        short_url: shortUrl
       });
     }
   });
