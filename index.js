@@ -18,12 +18,12 @@ app.get("/", function (req, res) {
   res.sendFile(process.cwd() + "/views/index.html");
 });
 
-// app.get("/api/shorturl/:url", (request, response) => {
-//   const shortUrl = request.params["url"];
-//   const site = urls[shortUrl - 1];
+app.get("/api/shorturl/:index", (request, response) => {
+  const shortUrl = request.params["index"];
+  const site = urls[shortUrl - 1];
 
-//   response.redirect(site.original_url);
-// });
+  response.redirect(site.original_url);
+});
 
 app.post("/api/shorturl", (request, response) => {
   const requestUrl = request.body.url.toString();
@@ -35,18 +35,14 @@ app.post("/api/shorturl", (request, response) => {
     if (error) {
       response.json({ error: "invalid url" });
     } else {
-      const url = { 'original_url': requestUrl, short_url: urls.length + 1};
-
-      urls.push(url);
-      response.json(url);
+      urls.push({ original_url: `https://${formattedUrl}`, short_url: urls.length + 1});
+      response.json({
+        original_url: requestUrl,
+        short_url: urls.length + 1
+      });
     }
   });
 });
-
-app.get("/api/thing", (request, response) => {
-  console.log('called');
-  response.sendStatus(200);
-})
 
 // Your first API endpoint
 app.get("/api/hello", function (req, res) {
