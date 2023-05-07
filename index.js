@@ -18,12 +18,12 @@ app.get("/", function (req, res) {
   res.sendFile(process.cwd() + "/views/index.html");
 });
 
-app.get("/api/shorturl/:url", (request, response) => {
-  const shortUrl = request.params["url"];
-  const site = urls[shortUrl - 1];
+// app.get("/api/shorturl/:url", (request, response) => {
+//   const shortUrl = request.params["url"];
+//   const site = urls[shortUrl - 1];
 
-  response.redirect(site.original_url);
-});
+//   response.redirect(site.original_url);
+// });
 
 app.post("/api/shorturl", (request, response) => {
   const requestUrl = request.body.url.toString();
